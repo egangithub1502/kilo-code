@@ -1,18 +1,78 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: Rollout
 metadata:
   name: stratex
-  namespace: argocd
+  namespace: profit
+  labels:
+    app: stratex
+    enabled: "true"
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/your-org/your-repo  # Replace with your Git repository URL
-    path: kube_yaml/us-prod-yaml/frontend/stratex
-    targetRevision: HEAD
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: profit
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  replicas: 2
+  strategy:
+    blueGreen:
+      activeService: stratex-svc
+      previewService: stratex-preview-svc
+      autoPromotionEnabled: false
+  selector:
+    matchLabels:
+      app: stratex
+  template:
+    metadata:
+      labels:
+        app: stratex
+        enabled: "true"
+    spec:
+      serviceAccountName: usp-workload-id-sa
+      containers:
+      - name: stratex
+        image: python:3.9-slim
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - ALL
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        command: ["python", "-m", "http.server", "8000"]
+        imagePullPolicy: Always
+        volumeMounts:
+         - name: stratex-properties
+           mountPath: "/home/devops/stratex-portal/.env"
+           subPath: ".env"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+      volumes:
+      - name: stratex-properties
+        csi:
+          driver: secrets-store-gke.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: stratex-properties
+      nodeSelector:
+        cloud.google.com/gke-nodepool: us-profit-gui-node-pool-feb-2025
