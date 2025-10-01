@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stratex
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/your-org/your-repo  # Replace with your Git repository URL
+    path: kube_yaml/us-prod-yaml/frontend/stratex
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: profit
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

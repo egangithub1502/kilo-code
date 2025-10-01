@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stratex-preview-svc
+  namespace: profit
+  labels:
+    app: stratex
+    enabled: "true"
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/load-balancer-type: "Internal"
+spec:
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: stratex
+    enabled: "true"
+  type: ClusterIP
