@@ -24,11 +24,10 @@ spec:
     spec:
       containers:
         - name: stratex
-          image: python:3.9-slim
+          image: us-central1-docker.pkg.dev/stm-01/my-app-repo/html-nginx-app:latest
           imagePullPolicy: Always
-          command: ["python", "-m", "http.server", "8000"]
           ports:
-            - containerPort: 8000
+            - containerPort: 80
               protocol: TCP
           resources:
             requests:
@@ -48,13 +47,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 8000
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /
-              port: 8000
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
       nodeSelector:
