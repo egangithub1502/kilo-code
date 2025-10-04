@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/egangithub1502/kilo-code.git  # Replace with your Git repository URL
+    repoURL: https://github.com/egangithub1502/kilo-code.git
     path: frontend/stratex
     targetRevision: HEAD
   destination:
@@ -16,3 +16,4 @@ spec:
     automated:
       prune: true
       selfHeal: true
+

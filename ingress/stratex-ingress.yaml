@@ -1,40 +1,31 @@
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: stratex-ingress
   namespace: profit
   annotations:
-    cloud.google.com/load-balancer-neg-ready: "true"
-    cloud.google.com/neg: '{"ingress": true}'
     kubernetes.io/ingress.global-static-ip-name: "profit-ingress-staticip"
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
-  tls:
-  - hosts:
-    - portal.profit.co
-    secretName: profit-tls-2025
-  - hosts:
-    - preview-portal.profit.co
-    secretName: profit-tls-2025
   rules:
-  - host: portal.profit.co
-    http:
-      paths:
-      - path: /*
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: stratex-svc
-            port:
-              number: 80
-  - host: preview-portal.profit.co
-    http:
-      paths:
-      - path: /*
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: stratex-preview-svc
-            port:
-              number: 80
----
+    - host: portal.example.com   # Active environment
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stratex-blue-svc   # Switch to stratex-green-svc when needed
+                port:
+                  number: 80
+    - host: preview.example.com  # Preview environment
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: stratex-green-svc
+                port:
+                  number: 80
+

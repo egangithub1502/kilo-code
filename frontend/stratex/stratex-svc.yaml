@@ -8,13 +8,12 @@ metadata:
     enabled: "true"
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
-    cloud.google.com/load-balancer-type: "Internal"
 spec:
   ports:
-  - port: 80
-    targetPort: 8000
-    protocol: TCP
-    name: http
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
   selector:
     app: stratex
     enabled: "true"
