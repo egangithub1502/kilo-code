@@ -13,6 +13,7 @@ spec:
       activeService: stratex-svc
       previewService: stratex-preview-svc
       autoPromotionEnabled: false
+      scaleDownDelaySeconds: 60
   selector:
     matchLabels:
       app: stratex
@@ -24,8 +25,8 @@ spec:
     spec:
       containers:
         - name: stratex
-          #image: us-central1-docker.pkg.dev/stm-01/my-app-repo/html-nginx-app:latest
-          image: us-central1-docker.pkg.dev/stm-01/my-app-repo/my-app:latest
+          image: us-central1-docker.pkg.dev/stm-01/my-app-repo/html-nginx-app:latest
+         #image: us-central1-docker.pkg.dev/stm-01/my-app-repo/my-app:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
