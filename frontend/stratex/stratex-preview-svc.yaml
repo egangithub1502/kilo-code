@@ -5,7 +5,7 @@ metadata:
   namespace: profit
   labels:
     app: stratex
-    enabled: "true"
+    type: preview
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
 spec:
@@ -16,6 +16,6 @@ spec:
       name: http
   selector:
     app: stratex
-    enabled: "true"
+    rollout: preview
   type: ClusterIP
 
