@@ -37,25 +37,32 @@ spec:
               cpu: "200m"
               memory: "1Gi"
           securityContext:
-            seccompProfile:
-              type: RuntimeDefault
-            capabilities:
-              drop: ["ALL"]
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 1000
+            # runAsNonRoot removed because Nginx runs as root inside container
           readinessProbe:
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
           livenessProbe:
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
       nodeSelector:
         cloud.google.com/gke-nodepool: jegan-test-cluster-pool
+      tolerations:
+        - key: "node.cloudprovider.kubernetes.io/uninitialized"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 300
 
