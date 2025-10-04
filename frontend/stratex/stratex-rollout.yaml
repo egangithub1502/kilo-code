@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         app: stratex
-        rollout: preview   # Argo Rollouts will create new pods with this label
+          #rollout: preview   # Argo Rollouts will create new pods with this label
     spec:
       containers:
         - name: stratex
