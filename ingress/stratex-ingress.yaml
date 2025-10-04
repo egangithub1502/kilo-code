@@ -15,7 +15,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: stratex-blue-svc   # Switch to stratex-green-svc when needed
+                name: stratex-svc   # Switch to stratex-green-svc when needed
                 port:
                   number: 80
     - host: preview.example.com  # Preview environment
@@ -25,7 +25,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: stratex-green-svc
+                name: stratex-preview-svc
                 port:
                   number: 80
 
