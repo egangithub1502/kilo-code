@@ -16,6 +16,5 @@ spec:
       name: http
   selector:
     app: stratex
-    rollout: active
   type: ClusterIP
 
