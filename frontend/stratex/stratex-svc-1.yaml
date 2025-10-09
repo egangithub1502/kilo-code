@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stratex-svc
+  namespace: profit
+  labels:
+    app: stratex
+    type: active
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: stratex
+  type: ClusterIP

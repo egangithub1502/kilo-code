@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: stratex
+  namespace: profit
+  labels:
+    app: stratex
+    enabled: "true"
+spec:
+  replicas: 2
+  strategy:
+    blueGreen:
+      activeService: stratex-svc
+      previewService: stratex-preview-svc
+      autoPromotionEnabled: false
+      # scaleDownDelaySeconds removed - preview pods will not scale down
+  selector:
+    matchLabels:
+      app: stratex
+  template:
+    metadata:
+      labels:
+        app: stratex
+    spec:
+      containers:
+        - name: stratex
+          image: us-central1-docker.pkg.dev/stm-01/my-app-repo/html-nginx-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "512Mi"
+            limits:
+              cpu: "200m"
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+      nodeSelector:
+        cloud.google.com/gke-nodepool: jegan-test-cluster-pool
+      tolerations:
+        - key: "node.cloudprovider.kubernetes.io/uninitialized"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node.kubernetes.io/not-ready"
+          operator: "Exists"
+          effect: "NoExecute"
+          tolerationSeconds: 300
