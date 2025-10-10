@@ -13,7 +13,7 @@ spec:
       activeService: stratex-svc
       previewService: stratex-preview-svc
       autoPromotionEnabled: false
-      # scaleDownDelaySeconds removed - preview pods will not scale down
+      scaleDownDelaySeconds: 86400
   selector:
     matchLabels:
       app: stratex
